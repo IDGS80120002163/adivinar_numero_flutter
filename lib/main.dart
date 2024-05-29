@@ -1,150 +1,250 @@
 import 'package:flutter/material.dart';
-import 'dart:math';
 
-void main() => runApp(MyApp());
+void main() {
+  runApp(const MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Juego de Adivinanza',
+      debugShowCheckedModeBanner: false,
+      title: 'Primera práctica',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        colorScheme:
+            ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 0, 20, 86)),
+        useMaterial3: true,
       ),
-      home: MyHomePage(title: 'Página Principal de Flutter'),
+      home: const MyHomePage(title: 'Primera práctica'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  final String title;
   const MyHomePage({super.key, required this.title});
+  final String title;
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final Random _random = Random();
-  late int _numeroObjetivo;
-  final TextEditingController _controller = TextEditingController();
-  int _intentos = 0;
-  final int _maxIntentos = 10;
-  String _helperText = 'Adivina el número entre 1 y 100';
-
-  @override
-  void initState() {
-    super.initState();
-    _reiniciarJuego();
-  }
-
-  void _reiniciarJuego() {
-    _numeroObjetivo = _random.nextInt(100) + 1;
-    _intentos = 0;
-    _helperText = 'Adivina el número entre 1 y 100';
-    _controller.clear();
-    setState(() {});
-  }
-
-  void _mostrarDialogoResultado(String titulo, String contenido) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(titulo),
-          content: Text(contenido),
-          actions: <Widget>[
-            TextButton(
-              child: Text("Jugar de Nuevo"),
-              onPressed: () {
-                Navigator.of(context).pop();
-                _reiniciarJuego();
-              },
-            ),
-            TextButton(
-              child: Text("Salir"),
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _verificarAdivinanza(String str) {
-    if (str.isEmpty) return;
-
-    int adivinanza = int.parse(str);
-    _intentos++;
-    String retroalimentacion;
-    int intentos_restantes = 10 - _intentos;
-
-    if (adivinanza < _numeroObjetivo) {
-      retroalimentacion = '¡Más alto! te quedan $intentos_restantes intentos';
-    } else if (adivinanza > _numeroObjetivo) {
-      retroalimentacion = '¡Más bajo! te quedan $intentos_restantes intentos';
-    } else {
-      _mostrarDialogoResultado('¡Felicidades!', 'Adivinaste el número en $_intentos intentos.');
-      return;
-    }
-
-    if (_intentos >= _maxIntentos) {
-      _mostrarDialogoResultado('Juego Terminado', 'Has usado los $_maxIntentos intentos. El número era $_numeroObjetivo.');
-      return;
-    }
-
-    _helperText = retroalimentacion;
-    int intensidad = (_intentos / _maxIntentos * 255).toInt();
-    Color colorRetroalimentacion = adivinanza < _numeroObjetivo
-        ? Colors.red.withOpacity(intensidad / 255)
-        : Colors.green.withOpacity(intensidad / 255);
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(_helperText),
-        backgroundColor: colorRetroalimentacion,
-        duration: Duration(seconds: 3),
-      ),
-    );
-
-    setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(15.0),
-        child: TextField(
-          controller: _controller,
-          onSubmitted: _verificarAdivinanza,
-          keyboardType: TextInputType.number,
-          decoration: InputDecoration(
-            prefixIconColor: Colors.purple,
-            filled: true,
-            fillColor: Color(0xfff4c8f0),
-            prefixIcon: Icon(Icons.numbers),
-            constraints: BoxConstraints(maxWidth: 450),
-            helperText: _helperText,
-            hintText: "Escribe tu número",
-            labelText: "Número",
-            border: OutlineInputBorder(),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+            stops: [0.1, 1],
+            colors: [Colors.blue, Colors.black],
           ),
-          style: TextStyle(
-            color: Color(0xffff0000),
-            fontSize: 26,
-            fontWeight: FontWeight.bold,
-            fontFamily: "Arial",
+        ),
+        child: Center(
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Container(
+                      width: 75,
+                      height: 75,
+                      margin: EdgeInsets.fromLTRB(30, 0, 30, 30),
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        border: Border.all(),
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          bottomRight: Radius.circular(30),
+                          bottomLeft: Radius.circular(10),
+                          topRight: Radius.circular(10),
+                        ),
+                      ),
+                      alignment: Alignment.bottomLeft,
+                      child: const Text("Hola mundo!"),
+                    ),
+                    Container(
+                      height: 100.0,
+                      width: 100.0,
+                      decoration: const BoxDecoration(
+                        color: Color.fromARGB(255, 15, 216, 58),
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Color.fromARGB(255, 11, 95, 3),
+                            blurRadius: 20.0,
+                            spreadRadius: 2.0,
+                            offset: Offset(0.0, 0.0),
+                          ),
+                        ],
+                      ),
+                      child: const Center(child: Text("Otro container")),
+                    ),
+                    Container(
+                      margin: EdgeInsets.all(40),
+                      width: 300,
+                      height: 90,
+                      alignment: Alignment.centerLeft,
+                      decoration: BoxDecoration(
+                        color: Color(0xFF4AAEFD),
+                        borderRadius: BorderRadius.circular(45),
+                      ),
+                      child: Container(
+                        width: 210,
+                        height: 90,
+                        decoration: BoxDecoration(
+                          color: Color(0xFF94CCF9),
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(45),
+                            bottomLeft: Radius.circular(45),
+                          ),
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Lonches',
+                          style: TextStyle(
+                            fontSize: 32,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      width: 100,
+                      height: 100,
+                      alignment: Alignment.center,
+                      child: const Text("Hola mundo!"),
+                      decoration: const BoxDecoration(
+                        gradient: RadialGradient(
+                          center: Alignment.centerRight,
+                          radius: 0.8,
+                          colors: [Colors.yellow, Colors.black],
+                        ),
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        print("Click corto");
+                      },
+                      onLongPress: () {
+                        print("Click Largo");
+                      },
+                      onDoubleTap: () {
+                        print("Doble click");
+                      },
+                      child: Container(
+                        width: 75,
+                        height: 75,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.yellow, width: 5),
+                          image: DecorationImage(
+                            image: AssetImage("../assets/hamburguesa.png"),
+                          ),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Colors.black,
+                              blurRadius: 10,
+                              offset: Offset(-5, 5),
+                              spreadRadius: 10,
+                            ),
+                          ],
+                        ),
+                        alignment: Alignment.bottomLeft,
+                        child: const Text(""),
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Container(
+                      height: 100.0,
+                      width: 250.0,
+                      margin: const EdgeInsets.all(50.0),
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Color.fromRGBO(15, 135, 226, 1),
+                            Color.fromRGBO(3, 29, 178, 1),
+                          ],
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                        ),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(15.0),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Color(0xff1552ed),
+                            spreadRadius: 10,
+                            blurRadius: 20,
+                            offset: Offset(3, 7),
+                          )
+                        ],
+                      ),
+                      child: Center(
+                        child: GestureDetector(
+                          onTap: () {},
+                          child: const Text(
+                            'Otro azulito sisisi',
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.all(20),
+                      color: Colors.lightBlue,
+                      child: Text('A', style: TextStyle(fontSize: 20)),
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                              blurRadius: 10,
+                              color: Colors.black,
+                              offset: Offset(10, 10))
+                        ],
+                      ),
+                      transform: Matrix4.rotationZ(0),
+                      alignment: Alignment.center,
+                      margin: EdgeInsets.all(25),
+                      width: 300,
+                      height: 100,
+                      child: Text("Hola a todos"),
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                          color: Colors.green[100], shape: BoxShape.circle),
+                      margin: EdgeInsets.all(45),
+                      padding: EdgeInsets.all(46),
+                      alignment: Alignment(0.0, 0.0),
+                      child: Text("Círculo."),
+                    ),
+                    Container(
+                      
+                    )
+                    ],
+                ),
+                ],
+            ),
           ),
-          textAlign: TextAlign.center,
         ),
       ),
     );
